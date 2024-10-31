@@ -8,7 +8,7 @@ import { InMemoryNotificationsRepository } from 'test/repositories/in-memory-not
 import { makeQuestionFactory } from 'test/factories/make-question.factory'
 import { SendNotificationUseCase } from '../use-cases/send-notification.use-case'
 import { MockInstance } from 'vitest'
-import { waitFor } from 'test/utils/wait-for'
+import { waitFor } from 'test/utils/wait-for.util'
 
 let inMemoryQuestionAttachmentsRepository: InMemoryQuestionAttachmentsRepository
 let inMemoryQuestionsRepository: InMemoryQuestionsRepository
