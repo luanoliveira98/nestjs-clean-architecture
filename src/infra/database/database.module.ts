@@ -6,10 +6,15 @@ import { PrismaAnswersRepository } from './prisma/repositories/prisma-answers.re
 import { PrismaQuestionAttachmentsRepository } from './prisma/repositories/prisma-question-attachments.repository'
 import { PrismaQuestionCommentsRepository } from './prisma/repositories/prisma-question-comments.repository'
 import { PrismaQuestionsRepository } from './prisma/repositories/prisma-questions.repository'
+import { QuestionsRepository } from '@/domain/forum/application/repositories/questions.repository.interface'
 
 @Module({
   providers: [
     PrismaService,
+    {
+      provide: QuestionsRepository,
+      useClass: PrismaQuestionsRepository,
+    },
     PrismaAnswerAttachmentsRepository,
     PrismaAnswerCommentsRepository,
     PrismaAnswersRepository,
@@ -24,7 +29,7 @@ import { PrismaQuestionsRepository } from './prisma/repositories/prisma-question
     PrismaAnswersRepository,
     PrismaQuestionAttachmentsRepository,
     PrismaQuestionCommentsRepository,
-    PrismaQuestionsRepository,
+    QuestionsRepository,
   ],
 })
 export class DatabaseModule {}
