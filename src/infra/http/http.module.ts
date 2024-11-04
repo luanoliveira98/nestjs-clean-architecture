@@ -9,7 +9,6 @@ import { FetchRecentQuestionsUseCase } from '@/domain/forum/application/use-case
 import { AuthenticateStudentUseCase } from '@/domain/forum/application/use-cases/authenticate-student.use-case'
 import { RegisterStudentUseCase } from '@/domain/forum/application/use-cases/register-student.use-case'
 import { CryptographyModule } from '../cryptography/cryptography.module'
-
 @Module({
   imports: [DatabaseModule, CryptographyModule],
   controllers: [
