@@ -5,11 +5,11 @@ import {
   Param,
   Post,
 } from '@nestjs/common'
-import { UserPayload } from '@/infra/auth/jwt.strategy'
-import { z } from 'zod'
-import { ZodValidationPipe } from '../pipes/zod-validation.pipe'
-import { AnswerQuestionUseCase } from '@/domain/forum/application/use-cases/answer-question.use-case'
 import { CurrentUser } from '@/infra/auth/current-user.decorator'
+import { UserPayload } from '@/infra/auth/jwt.strategy'
+import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation.pipe'
+import { z } from 'zod'
+import { AnswerQuestionUseCase } from '@/domain/forum/application/use-cases/answer-question.use-case'
 
 const answerQuestionBodySchema = z.object({
   content: z.string(),
@@ -21,7 +21,7 @@ type AnswerQuestionBodySchema = z.infer<typeof answerQuestionBodySchema>
 
 @Controller('/questions/:questionId/answers')
 export class AnswerQuestionController {
-  constructor(private answerQuestion: AnswerQuestionUseCase) {}
+  constructor(private readonly answerQuestion: AnswerQuestionUseCase) {}
 
   @Post()
   async handle(
@@ -34,8 +34,8 @@ export class AnswerQuestionController {
 
     const result = await this.answerQuestion.execute({
       content,
-      questionId,
       authorId: userId,
+      questionId,
       attachmentsIds: [],
     })
 

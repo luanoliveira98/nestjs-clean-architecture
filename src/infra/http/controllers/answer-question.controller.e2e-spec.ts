@@ -10,10 +10,11 @@ import { StudentFactory } from 'test/factories/make-student.factory'
 
 describe('Answer question (E2E)', () => {
   let app: INestApplication
+  let jwt: JwtService
+
   let prisma: PrismaService
   let studentFactory: StudentFactory
   let questionFactory: QuestionFactory
-  let jwt: JwtService
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -23,12 +24,17 @@ describe('Answer question (E2E)', () => {
 
     app = moduleRef.createNestApplication()
 
+    jwt = moduleRef.get(JwtService)
+
     prisma = moduleRef.get(PrismaService)
     studentFactory = moduleRef.get(StudentFactory)
     questionFactory = moduleRef.get(QuestionFactory)
-    jwt = moduleRef.get(JwtService)
 
     await app.init()
+  })
+
+  afterAll(async () => {
+    await app.close()
   })
 
   test('[POST] /questions/:questionId/answers', async () => {
@@ -51,12 +57,10 @@ describe('Answer question (E2E)', () => {
 
     expect(response.statusCode).toBe(201)
 
-    const answerOnDatabase = await prisma.answer.findFirst({
-      where: {
-        content: 'New answer',
-      },
+    const questionOnDatabase = await prisma.answer.findFirst({
+      where: { content: 'New answer' },
     })
 
-    expect(answerOnDatabase).toBeTruthy()
+    expect(questionOnDatabase).toBeTruthy()
   })
 })
