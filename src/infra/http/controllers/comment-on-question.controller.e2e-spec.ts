@@ -8,7 +8,7 @@ import request from 'supertest'
 import { QuestionFactory } from 'test/factories/make-question.factory'
 import { StudentFactory } from 'test/factories/make-student.factory'
 
-describe('Answer question (E2E)', () => {
+describe('Comment on question (E2E)', () => {
   let app: INestApplication
   let jwt: JwtService
 
@@ -37,7 +37,7 @@ describe('Answer question (E2E)', () => {
     await app.close()
   })
 
-  test('[POST] /questions/:questionId/answers', async () => {
+  test('[POST] /questions/:questionId/comments', async () => {
     const user = await studentFactory.makePrismaStudent()
 
     const accessToken = jwt.sign({ sub: user.id.toString() })
@@ -49,18 +49,18 @@ describe('Answer question (E2E)', () => {
     const questionId = question.id.toString()
 
     const response = await request(app.getHttpServer())
-      .post(`/questions/${questionId}/answers`)
+      .post(`/questions/${questionId}/comments`)
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
-        content: 'New answer',
+        content: 'New comments',
       })
 
     expect(response.statusCode).toBe(201)
 
-    const answerOnDatabase = await prisma.answer.findFirst({
-      where: { content: 'New answer' },
+    const commentOnDatabase = await prisma.comment.findFirst({
+      where: { content: 'New comments' },
     })
 
-    expect(answerOnDatabase).toBeTruthy()
+    expect(commentOnDatabase).toBeTruthy()
   })
 })
