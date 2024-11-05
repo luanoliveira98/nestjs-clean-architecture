@@ -9,7 +9,7 @@ import { AnswerFactory } from 'test/factories/make-answer.factory'
 import { QuestionFactory } from 'test/factories/make-question.factory'
 import { StudentFactory } from 'test/factories/make-student.factory'
 
-describe('Edit answer (E2E)', () => {
+describe('Delete question (E2E)', () => {
   let app: INestApplication
   let jwt: JwtService
 
@@ -40,7 +40,7 @@ describe('Edit answer (E2E)', () => {
     await app.close()
   })
 
-  test('[PUT] /answers/:id', async () => {
+  test('[DELETE] /questions/:id', async () => {
     const user = await studentFactory.makePrismaStudent()
 
     const accessToken = jwt.sign({ sub: user.id.toString() })
@@ -50,25 +50,23 @@ describe('Edit answer (E2E)', () => {
     })
 
     const answer = await answerFactory.makePrismaAnswer({
-      questionId: question.id,
       authorId: user.id,
+      questionId: question.id,
     })
 
     const answerId = answer.id.toString()
 
     const response = await request(app.getHttpServer())
-      .put(`/answers/${answerId}`)
+      .delete(`/answers/${answerId}`)
       .set('Authorization', `Bearer ${accessToken}`)
-      .send({
-        content: 'New answer content',
-      })
+      .send()
 
     expect(response.statusCode).toBe(204)
 
-    const answerOnDatabase = await prisma.answer.findFirst({
-      where: { content: 'New answer content' },
+    const answerOnDatabase = await prisma.answer.findUnique({
+      where: { id: answerId },
     })
 
-    expect(answerOnDatabase).toBeTruthy()
+    expect(answerOnDatabase).toBeNull()
   })
 })
