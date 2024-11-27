@@ -80,4 +80,36 @@ describe('Edit Answer', () => {
       content: 'Content test',
     })
   })
+
+  it('should be able to sync new and removed attachments when editing a answer', async () => {
+    const newAnswer = makeAnswerFactory()
+    await inMemoryAnswersRepository.create(newAnswer)
+
+    await inMemoryAnswerAttachmentsRepository.items.push(
+      makeAnswerAttachmentFactory({
+        answerId: newAnswer.id,
+        attachmentId: new UniqueEntityID('1'),
+      }),
+      makeAnswerAttachmentFactory({
+        answerId: newAnswer.id,
+        attachmentId: new UniqueEntityID('2'),
+      }),
+    )
+
+    const result = await sut.execute({
+      authorId: newAnswer.authorId.toValue(),
+      answerId: newAnswer.id.toValue(),
+      content: 'Content test',
+      attachmentsIds: ['1', '3'],
+    })
+
+    expect(result.isRight()).toBe(true)
+    expect(inMemoryAnswerAttachmentsRepository.items).toHaveLength(2)
+    expect(inMemoryAnswerAttachmentsRepository.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ attachmentId: new UniqueEntityID('1') }),
+        expect.objectContaining({ attachmentId: new UniqueEntityID('3') }),
+      ]),
+    )
+  })
 })
