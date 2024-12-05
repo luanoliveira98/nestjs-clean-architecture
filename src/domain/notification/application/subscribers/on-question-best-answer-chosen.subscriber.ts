@@ -3,7 +3,9 @@ import { EventHandler } from '@/core/events/event-handler.interface'
 import { SendNotificationUseCase } from '../use-cases/send-notification.use-case'
 import { QuestionBestAnswerChosenEvent } from '@/domain/forum/events/question-best-answer-chosen.event'
 import { AnswersRepository } from '@/domain/forum/application/repositories/answers.repository.interface'
+import { Injectable } from '@nestjs/common'
 
+@Injectable()
 export class OnQuestionBestAnswerChosenSubscriber implements EventHandler {
   constructor(
     private readonly answersRepository: AnswersRepository,
