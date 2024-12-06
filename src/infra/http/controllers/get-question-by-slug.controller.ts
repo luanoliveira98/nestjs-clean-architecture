@@ -4,11 +4,11 @@ import { QuestionDetailsPresenter } from '../presenters/question-details.present
 
 @Controller('/questions/:slug')
 export class GetQuestionBySlugController {
-  constructor(private readonly getQuestionBySlugs: GetQuestionBySlugUseCase) {}
+  constructor(private readonly getQuestionBySlug: GetQuestionBySlugUseCase) {}
 
   @Get()
   async handle(@Param('slug') slug: string) {
-    const result = await this.getQuestionBySlugs.execute({ slug })
+    const result = await this.getQuestionBySlug.execute({ slug })
 
     if (result.isLeft()) {
       throw new BadRequestException()
